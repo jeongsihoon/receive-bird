@@ -1,0 +1,15 @@
+server:
+  port: 9090
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: "jdbc:mysql://localhost/receive_bird_group?autoReconnect=true&serverTimezone=UTC"
+    username: root
+    password: 1234
+
+  jpa:
+    show-sql: true
+    hibernate:
+      format_sql: true
+      ddl-auto: update
