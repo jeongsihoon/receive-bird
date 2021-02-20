@@ -8,7 +8,15 @@ spring:
   cloud:
     stream:
       bindings:
-        sink1-in-0:
-          destination: test
-      function:
-        definition: sink1;
+        registerSession-in-0:
+          destination: register_session
+        deregisterSession-in-0:
+          destination: deregister_session
+    function:
+      definition: registerSession;deregisterSession;
+
+receive-bird:
+  websocket-manager:
+    node-id: 1
+
+

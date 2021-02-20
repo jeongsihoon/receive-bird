@@ -11,5 +11,13 @@ spring:
   cloud:
     stream:
       bindings:
-        sink1-in-0:
-          destination: relay
+        sendMessageToAll-in-0:
+          destination: send_message_to_all
+        sendMessageToUser-in-0:
+          destination: send_message_to_user
+    function:
+      definition: sendMessageToAll;sendMessageToUser;
+
+receive-bird:
+  websocket-handler:
+    node-id: 1

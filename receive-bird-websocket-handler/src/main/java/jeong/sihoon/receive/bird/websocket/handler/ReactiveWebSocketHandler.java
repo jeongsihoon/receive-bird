@@ -1,20 +1,15 @@
 package jeong.sihoon.receive.bird.websocket.handler;
 
 import lombok.extern.log4j.Log4j2;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.kafka.DefaultKafkaConsumerFactoryCustomizer;
-import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.support.DefaultDataBinderFactory;
 import org.springframework.web.reactive.socket.WebSocketHandler;
-import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Mono;
 
-import java.util.function.Consumer;
+import java.util.UUID;
 
 @Log4j2
 @Component
@@ -25,17 +20,7 @@ public class ReactiveWebSocketHandler implements WebSocketHandler {
     @Autowired
     private KafkaTemplate<Object, Object> kafkaTemplate;
 
-    @Bean
-    public Consumer<String> sink1() {
-        return message->{
-            log.info("ReceiveMessage: {}", message);
-            WebSocketMessage relayMessage = new WebSocketMessage(WebSocketMessage.Type.TEXT,
-                    DefaultDataBufferFactory.sharedInstance.wrap(message.getBytes()));
 
-            webSocketSessionManager.getWebSocketSessionSet()
-                    .forEach(session->session.send(Mono.just(relayMessage)).subscribe());
-        };
-    }
 
     @Override
     public Mono<Void> handle(WebSocketSession webSocketSession) {
@@ -43,13 +28,18 @@ public class ReactiveWebSocketHandler implements WebSocketHandler {
                 .doOnSubscribe(subscription -> {
                     log.info("[SUBSCRIBE]");
                     webSocketSessionManager.registerSession(webSocketSession);
+                    JSONObject registerSessionMessage = new JSONObject();
+                    registerSessionMessage.put("NODE_ID", 1);
+                    registerSessionMessage.put("SESSION_ID", UUID.randomUUID().toString());
+                    kafkaTemplate.send("register_session", registerSessionMessage.toString());
                 })
                 .doOnNext(webSocketMessage -> {
-                    kafkaTemplate.send("test", webSocketMessage.getPayloadAsText());
                     log.info("[NEXT]");
+                    kafkaTemplate.send("send_message_to_all", webSocketMessage.getPayloadAsText());
                 })
                 .doOnComplete(()->{
                     log.info("[COMPLETE]");
+                    webSocketSessionManager.deregisterSession(webSocketSession);
                 })
                 .doOnCancel(()->{
                     log.info("[CANCEL]");

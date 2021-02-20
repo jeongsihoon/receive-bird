@@ -1,7 +1,10 @@
+server:
+  port: 7070
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: "jdbc:mysql://localhost/miscellaneous?autoReconnect=true&serverTimezone=UTC"
+    url: "jdbc:mysql://localhost/receive_bird_user?autoReconnect=true&serverTimezone=UTC"
     username: root
     password: 1234
 
