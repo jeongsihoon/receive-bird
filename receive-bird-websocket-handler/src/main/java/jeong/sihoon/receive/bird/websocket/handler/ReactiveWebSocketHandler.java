@@ -9,8 +9,6 @@ import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.Mono;
 
-import java.util.UUID;
-
 @Log4j2
 @Component
 public class ReactiveWebSocketHandler implements WebSocketHandler {
@@ -30,7 +28,7 @@ public class ReactiveWebSocketHandler implements WebSocketHandler {
                     webSocketSessionManager.registerSession(webSocketSession);
                     JSONObject registerSessionMessage = new JSONObject();
                     registerSessionMessage.put("NODE_ID", 1);
-                    registerSessionMessage.put("SESSION_ID", UUID.randomUUID().toString());
+                    registerSessionMessage.put("SESSION_ID", webSocketSession.getId());
                     kafkaTemplate.send("register_session", registerSessionMessage.toString());
                 })
                 .doOnNext(webSocketMessage -> {
@@ -40,6 +38,10 @@ public class ReactiveWebSocketHandler implements WebSocketHandler {
                 .doOnComplete(()->{
                     log.info("[COMPLETE]");
                     webSocketSessionManager.deregisterSession(webSocketSession);
+                    JSONObject registerSessionMessage = new JSONObject();
+                    registerSessionMessage.put("NODE_ID", 1);
+                    registerSessionMessage.put("SESSION_ID", webSocketSession.getId());
+                    kafkaTemplate.send("deregister_session", registerSessionMessage.toString());
                 })
                 .doOnCancel(()->{
                     log.info("[CANCEL]");
