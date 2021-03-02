@@ -1,5 +1,6 @@
 # receive-bird
 메신저 백엔드 개발 프로젝트
+https://docs.google.com/presentation/d/17iYsghZAGymy6XweNlnzGIbAv6fidXJdjdJ9a66xJWs/edit?usp=sharing
 
 프로젝트 이름은 sendbird에 대한 오마쥬
 
@@ -24,6 +25,4 @@
 
 유저 정보 관리 서비스나 그룹 정보 관리 서비스는 REST API
 
-
-https://docs.google.com/presentation/d/17iYsghZAGymy6XweNlnzGIbAv6fidXJdjdJ9a66xJWs/edit?usp=sharing
 
