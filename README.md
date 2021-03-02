@@ -23,3 +23,7 @@
 클라이언트와 메시지 핸들러 서비스간 메시지 송수신은 직렬화된 메시지(protobuf)
 
 유저 정보 관리 서비스나 그룹 정보 관리 서비스는 REST API
+
+
+https://docs.google.com/presentation/d/17iYsghZAGymy6XweNlnzGIbAv6fidXJdjdJ9a66xJWs/edit?usp=sharing
+
